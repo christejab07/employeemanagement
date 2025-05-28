@@ -1,0 +1,36 @@
+.
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── com
+│   │   │       └── example
+│   │   │           └── employeemanagement
+│   │   │               ├── EmployeeManagementApplication.java
+│   │   │               ├── config
+│   │   │               │   └── SecurityConfig.java
+│   │   │               ├── controller
+│   │   │               │   ├── AuthController.java
+│   │   │               │   ├── DepartmentController.java
+│   │   │               │   └── EmployeeController.java
+│   │   │               ├── model
+│   │   │               │   ├── Department.java
+│   │   │               │   ├── Employee.java
+│   │   │               │   └── User.java
+│   │   │               ├── repository
+│   │   │               │   ├── DepartmentRepository.java
+│   │   │               │   ├── EmployeeRepository.java
+│   │   │               │   └── UserRepository.java
+│   │   │               └── service
+│   │   │                   ├── DepartmentService.java
+│   │   │                   ├── EmployeeService.java
+│   │   │                   └── UserService.java
+│   │   └── resources
+│   │       ├── application.properties
+│   │       └── logback-spring.xml (for logging configuration)
+│   └── test
+│       └── java
+│           └── com
+│               └── example
+│                   └── employeemanagement
+│                       └── EmployeeManagementApplicationTests.java
+└── pom.xml
