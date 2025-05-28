@@ -3,6 +3,9 @@ package com.example.employeemanagement.controller;
 import com.example.employeemanagement.dto.DepartmentRequestDTO; // Changed import
 import com.example.employeemanagement.dto.DepartmentResponseDTO; // New import
 import com.example.employeemanagement.service.DepartmentService;
+import io.swagger.v3.oas.annotations.Operation; // New import
+import io.swagger.v3.oas.annotations.security.SecurityRequirement; // New import
+import io.swagger.v3.oas.annotations.tags.Tag; // New import
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +23,8 @@ import java.util.Optional;
  */
 @RestController // Marks this class as a REST controller
 @RequestMapping("/api/departments") // Base path for all endpoints in this controller
+@Tag(name = "Department Management", description = "Operations related to departments") // New: Tag for grouping in Swagger UI
+@SecurityRequirement(name = "basicAuth") // New: Applies basicAuth security to all methods in this controller by default
 public class DepartmentController {
 
     private static final Logger logger = LoggerFactory.getLogger(DepartmentController.class); // Logger for this class
@@ -45,6 +50,7 @@ public class DepartmentController {
      */
     @PostMapping // Maps POST requests to /api/departments
     @PreAuthorize("hasRole('ADMIN')") // Requires ADMIN role
+    @Operation(summary = "Create a new department", description = "Only ADMIN users can create departments.") // New: Operation summary
     public ResponseEntity<DepartmentResponseDTO> createDepartment(@Valid @RequestBody DepartmentRequestDTO departmentRequestDTO) { // Changed parameter and return type
         logger.info("Admin user attempting to create new department: {}", departmentRequestDTO.getName());
         try {
@@ -67,6 +73,7 @@ public class DepartmentController {
      */
     @GetMapping // Maps GET requests to /api/departments
     @PreAuthorize("hasAnyRole('ADMIN', 'NORMAL_USER')") // Accessible by ADMIN or NORMAL_USER
+    @Operation(summary = "Get all departments", description = "Accessible by ADMIN and NORMAL_USER to retrieve all department records.") // New: Operation summary
     public ResponseEntity<List<DepartmentResponseDTO>> getAllDepartments() { // Changed return type
         logger.info("User requesting all departments.");
         List<DepartmentResponseDTO> departments = departmentService.getAllDepartments();
@@ -82,6 +89,7 @@ public class DepartmentController {
      */
     @GetMapping("/{id}") // Maps GET requests to /api/departments/{id}
     @PreAuthorize("hasAnyRole('ADMIN', 'NORMAL_USER')") // Accessible by ADMIN or NORMAL_USER
+    @Operation(summary = "Get department by ID", description = "Accessible by ADMIN and NORMAL_USER to retrieve a specific department by its ID.")
     public ResponseEntity<DepartmentResponseDTO> getDepartmentById(@PathVariable Long id) { // Changed return type
         logger.info("User requesting department with ID: {}", id);
         Optional<DepartmentResponseDTO> department = departmentService.getDepartmentById(id);
@@ -102,6 +110,7 @@ public class DepartmentController {
      */
     @PutMapping("/{id}") // Maps PUT requests to /api/departments/{id}
     @PreAuthorize("hasRole('ADMIN')") // Requires ADMIN role
+    @Operation(summary = "Update a department", description = "Only ADMIN users can update department records.")
     public ResponseEntity<DepartmentResponseDTO> updateDepartment(@PathVariable Long id, @Valid @RequestBody DepartmentRequestDTO departmentRequestDTO) { // Changed parameter and return type
         logger.info("Admin user attempting to update department with ID: {}", id);
         try {
@@ -125,6 +134,7 @@ public class DepartmentController {
      */
     @DeleteMapping("/{id}") // Maps DELETE requests to /api/departments/{id}
     @PreAuthorize("hasRole('ADMIN')") // Requires ADMIN role
+    @Operation(summary = "Delete a department", description = "Only ADMIN users can delete department records.")
     public ResponseEntity<Void> deleteDepartment(@PathVariable Long id) {
         logger.info("Admin user attempting to delete department with ID: {}", id);
         try {

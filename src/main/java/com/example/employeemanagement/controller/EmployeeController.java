@@ -3,6 +3,9 @@ package com.example.employeemanagement.controller;
 import com.example.employeemanagement.dto.EmployeeRequestDTO; // Changed import
 import com.example.employeemanagement.dto.EmployeeResponseDTO; // New import
 import com.example.employeemanagement.service.EmployeeService;
+import io.swagger.v3.oas.annotations.Operation; // New import
+import io.swagger.v3.oas.annotations.security.SecurityRequirement; // New import
+import io.swagger.v3.oas.annotations.tags.Tag; // New import
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +24,8 @@ import java.util.Optional;
  */
 @RestController // Marks this class as a REST controller
 @RequestMapping("/api/employees") // Base path for all endpoints in this controller
+@Tag(name = "Employee Management", description = "Operations related to employee") // New: Tag for grouping in Swagger UI
+@SecurityRequirement(name = "basicAuth") // New: Applies basicAuth security to all methods in this controller by default
 public class EmployeeController {
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class); // Logger for this class
@@ -46,6 +51,7 @@ public class EmployeeController {
      */
     @PostMapping // Maps POST requests to /api/employees
     @PreAuthorize("hasAnyRole('ADMIN', 'NORMAL_USER')") // Accessible by ADMIN or NORMAL_USER
+    @Operation(summary = "Create a new employee", description = "Accessible by ADMIN and NORMAL_USER to create an employee.") // New: Operation summary
     public ResponseEntity<EmployeeResponseDTO> createEmployee(@Valid @RequestBody EmployeeRequestDTO employeeRequestDTO) { // Changed parameter and return type
         logger.info("User attempting to create new employee: {}", employeeRequestDTO.getEmail());
         try {
@@ -68,6 +74,7 @@ public class EmployeeController {
      */
     @GetMapping // Maps GET requests to /api/employees
     @PreAuthorize("hasAnyRole('ADMIN', 'NORMAL_USER')") // Accessible by ADMIN or NORMAL_USER
+    @Operation(summary = "Get all employees", description = "Accessible by ADMIN and NORMAL_USER to retrieve all department records.") // New: Operation summary
     public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees() { // Changed return type
         logger.info("User requesting all employees.");
         List<EmployeeResponseDTO> employees = employeeService.getAllEmployees();
@@ -83,6 +90,7 @@ public class EmployeeController {
      */
     @GetMapping("/{id}") // Maps GET requests to /api/employees/{id}
     @PreAuthorize("hasAnyRole('ADMIN', 'NORMAL_USER')") // Accessible by ADMIN or NORMAL_USER
+    @Operation(summary = "Get an employee by ID", description = "Accessible by ADMIN and NORMAL_USER to retrieve an employee by ID.") // New: Operation summary
     public ResponseEntity<EmployeeResponseDTO> getEmployeeById(@PathVariable Long id) { // Changed return type
         logger.info("User requesting employee with ID: {}", id);
         Optional<EmployeeResponseDTO> employee = employeeService.getEmployeeById(id);
@@ -102,6 +110,7 @@ public class EmployeeController {
      */
     @GetMapping("/by-department/{departmentId}") // Maps GET requests to /api/employees/by-department/{departmentId}
     @PreAuthorize("hasAnyRole('ADMIN', 'NORMAL_USER')") // Accessible by ADMIN or NORMAL_USER
+    @Operation(summary = "Get an employee by department ID", description = "Accessible by ADMIN and NORMAL_USER to retrieve an employee by department ID.") // New: Operation summary
     public ResponseEntity<List<EmployeeResponseDTO>> getEmployeesByDepartment(@PathVariable Long departmentId) { // Changed return type
         logger.info("User requesting employees for department ID: {}", departmentId);
         try {
@@ -126,6 +135,7 @@ public class EmployeeController {
      */
     @PutMapping("/{id}") // Maps PUT requests to /api/employees/{id}
     @PreAuthorize("hasAnyRole('ADMIN', 'NORMAL_USER')") // Accessible by ADMIN or NORMAL_USER
+    @Operation(summary = "Update an employee", description = "Both ADMIN and NORMAL_USER can update employee records.") // New: Operation summary
     public ResponseEntity<EmployeeResponseDTO> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeRequestDTO employeeRequestDTO) { // Changed parameter and return type
         logger.info("User attempting to update employee with ID: {}", id);
         try {
@@ -149,6 +159,7 @@ public class EmployeeController {
      */
     @DeleteMapping("/{id}") // Maps DELETE requests to /api/employees/{id}
     @PreAuthorize("hasAnyRole('ADMIN', 'NORMAL_USER')") // Accessible by ADMIN or NORMAL_USER
+    @Operation(summary = "Delete an employee", description = "Both ADMIN and NORMAL_USER can delete employee records.")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
         logger.info("User attempting to delete employee with ID: {}", id);
         try {
